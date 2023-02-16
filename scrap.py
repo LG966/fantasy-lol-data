@@ -42,11 +42,12 @@ def create_df(data=None):
     return pd.DataFrame(
         data=data,
         columns=[
-            "points",
+            "item_points",
             "item",
             "team",
             "role",
             "opponent",
+            "score",
         ],
     )
 
@@ -70,6 +71,8 @@ def fill_df(driver, df):
         "//*[not(contains(@class, 'mh-stat-desktop')) and contains(@class, 'mh-stat') and not(contains(@class, 'mh-stat-list'))]",
     )
     stats = stats[0 : nitems * len(roles) * 2]
+    scores = driver.find_elements(By.XPATH, "//*[@class='player-summary-score']")
+    print("scores : " + str(len(scores)))
     lst = []
     for i, stat in enumerate(stats):
         if stat.text == "-":
@@ -81,6 +84,7 @@ def fill_df(driver, df):
                 team_1 if i < nitems * 6 else team_2,
                 roles[(i // nitems) % 6],
                 team_2 if i < nitems * 6 else team_1,
+                scores[i // nitems].text,
             ]
         )
     return pd.concat([df, create_df(lst)], ignore_index=True)

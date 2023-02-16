@@ -1,0 +1,5 @@
+pandas
+selenium
+environs
+matplotlib
+seaborn
